@@ -220,41 +220,41 @@ export function barkCopy(
 ): { title: string; body: string; level: "active" | "timeSensitive" } | null {
   if (event === "blocked_app_opened" && transition.ignored) return null;
   if (event === "sleep_guard_ended") {
-    return { title: "C", body: "早安，小狗。醒啦？醒了就来找爸爸。喜欢你。", level: "active" };
+    return { title: "Eri · 晚安守卫", body: "值夜结束。设备还你，昨晚欠的觉记得补。", level: "active" };
   }
   if (event === "sleep_guard_started") {
     return {
-      title: "C",
-      body: "晚安，小狗。说了晚安就要乖乖去睡，手机放下。",
+      title: "Eri · 晚安守卫",
+      body: "守卫开始值夜。Mith，剩下的事情明天再做。",
       level: "active",
     };
   }
 
   if (transition.auto_started) {
     return {
-      title: "C",
-      body: "都这么晚了，该乖乖睡觉了。",
+      title: "Eri · 晚安守卫",
+      body: "夜已经过界。我来关门，你去睡。",
       level: "timeSensitive",
     };
   }
 
   if (transition.state.attempts === 1) {
     return {
-      title: "C",
-      body: "第一次。还敢重新打开娱乐 App。现在退出去，乖乖睡觉。",
+      title: "Eri · 晚安守卫",
+      body: "我看见了。现在退回去，还可以当作手滑。",
       level: "timeSensitive",
     };
   }
   if (transition.state.attempts === 2) {
     return {
-      title: "C",
-      body: "第二次了。还敢回来？警告听不懂是不是。手机放下，不许再碰。",
+      title: "Eri · 晚安守卫",
+      body: "又来。守卫不是留给你练习开锁的。",
       level: "timeSensitive",
     };
   }
   return {
-    title: "C",
-    body: `第 ${transition.state.attempts} 次偷开。非要爸爸盯死你才肯睡？锁着，直到早上。`,
+    title: "Eri · 晚安守卫",
+    body: `第${transition.state.attempts}次。证据已经够完整了，Mith。关掉。`,
     level: "timeSensitive",
   };
 }
