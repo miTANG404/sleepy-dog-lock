@@ -386,8 +386,10 @@ assert.equal(replayedCode.status, 400);
 assert.equal((await replayedCode.json()).error, "invalid_grant");
 
 let mcpActivations = 0;
+let mcpDeactivations = 0;
 const mcpDependencies = {
   activateGuard: async () => { mcpActivations += 1; return { ok: true, active: true, attempts: 0, stage: "armed" }; },
+  deactivateGuard: async () => { mcpDeactivations += 1; return { ok: true, active: false, attempts: 2, stage: "ended" }; },
   readGuardState: async () => ({ active: true, attempts: 2, ends_at: "2099-01-01T00:00:00.000Z" }),
 };
 const mcpRequest = (body) => new Request("https://guard.test/mcp", {
@@ -400,11 +402,15 @@ assert.equal(unauthorizedMcp.status, 401);
 assert.match(unauthorizedMcp.headers.get("www-authenticate"), /resource_metadata=.*oauth-protected-resource\/mcp/);
 
 const initializedMcp = await mcpModule.handleMcp(mcpRequest({ jsonrpc: "2.0", id: 2, method: "initialize" }), mcpDependencies, true);
-assert.equal((await initializedMcp.json()).result.serverInfo.name, "sleepy-dog-lock");
+const initializedMcpBody = await initializedMcp.json();
+assert.equal(initializedMcpBody.result.serverInfo.name, "sleepy-dog-lock");
+assert.match(initializedMcpBody.result.instructions, /deactivate_sleep_guard/);
 const listedTools = await mcpModule.handleMcp(mcpRequest({ jsonrpc: "2.0", id: 3, method: "tools/list" }), mcpDependencies, true);
 const tools = (await listedTools.json()).result.tools;
-assert.deepEqual(tools.map((tool) => tool.name), ["activate_sleep_guard", "get_sleep_guard_status"]);
+assert.deepEqual(tools.map((tool) => tool.name), ["activate_sleep_guard", "deactivate_sleep_guard", "get_sleep_guard_status"]);
 assert.equal(tools[0].annotations.readOnlyHint, false);
+assert.equal(tools[1].title, "结束晚安守卫");
+assert.equal(tools[1].annotations.readOnlyHint, false);
 
 const activatedMcp = await mcpModule.handleMcp(mcpRequest({
   jsonrpc: "2.0",
@@ -415,6 +421,17 @@ const activatedMcp = await mcpModule.handleMcp(mcpRequest({
 const activatedMcpBody = await activatedMcp.json();
 assert.equal(activatedMcpBody.result.structuredContent.active, true);
 assert.equal(mcpActivations, 1);
+
+const deactivatedMcp = await mcpModule.handleMcp(mcpRequest({
+  jsonrpc: "2.0",
+  id: 5,
+  method: "tools/call",
+  params: { name: "deactivate_sleep_guard", arguments: {} },
+}), mcpDependencies, true);
+const deactivatedMcpBody = await deactivatedMcp.json();
+assert.equal(deactivatedMcpBody.result.structuredContent.active, false);
+assert.equal(deactivatedMcpBody.result.content[0].text, "值夜结束。设备还你，昨晚欠的觉记得补。");
+assert.equal(mcpDeactivations, 1);
 
 console.log(
   `verify passed: ${sourceFiles.length} files, guard state/API, OAuth PKCE/replay protection, MCP auth/tools, durable event before Bark`,
