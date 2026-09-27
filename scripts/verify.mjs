@@ -139,7 +139,7 @@ assert.equal(lateOpen.auto_started, true);
 assert.equal(lateOpen.state.ends_at, "2026-08-09T03:00:00.000Z");
 assert.equal(
   functionModule.barkCopy("blocked_app_opened", lateOpen, null).body,
-  "夜已经过界。我来关门，你去睡。",
+  "又到这个点了，Mith。平板先锁了，划掉通知也不算没看见。",
 );
 
 const atWakeTime = functionModule.applyEvent(null, {
@@ -279,7 +279,7 @@ assert.equal(autoStartedBody.auto_started, true);
 assert.equal(autoStartedBody.stage, "first_warning");
 assert.equal(
   barkBodies.at(-1).body,
-  "夜已经过界。我来关门，你去睡。",
+  "又到这个点了，Mith。平板先锁了，划掉通知也不算没看见。",
 );
 
 let barkCalledAfterStorageFailure = false;
