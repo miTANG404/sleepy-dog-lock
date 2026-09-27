@@ -233,7 +233,7 @@ export function barkCopy(
   if (transition.auto_started) {
     return {
       title: "Eri · 晚安守卫",
-      body: "夜已经过界。我来关门，你去睡。",
+      body: "又到这个点了，Mith。平板先锁了，划掉通知也不算没看见。",
       level: "timeSensitive",
     };
   }
