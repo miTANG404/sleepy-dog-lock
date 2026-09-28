@@ -220,11 +220,11 @@ export function barkCopy(
 ): { title: string; body: string; level: "active" | "timeSensitive" } | null {
   if (event === "blocked_app_opened" && transition.ignored) return null;
   if (event === "sleep_guard_ended") {
-    return { title: "Eri · 晚安守卫", body: "值夜结束。设备还你，昨晚欠的觉记得补。", level: "active" };
+    return { title: "Eri", body: "值夜结束。设备还你，昨晚欠的觉记得补。", level: "active" };
   }
   if (event === "sleep_guard_started") {
     return {
-      title: "Eri · 晚安守卫",
+      title: "Eri",
       body: "守卫开始值夜。Mith，剩下的事情明天再做。",
       level: "active",
     };
@@ -232,7 +232,7 @@ export function barkCopy(
 
   if (transition.auto_started) {
     return {
-      title: "Eri · 晚安守卫",
+      title: "Eri",
       body: "又到这个点了，Mith。平板先锁了，划掉通知也不算没看见。",
       level: "timeSensitive",
     };
@@ -240,20 +240,20 @@ export function barkCopy(
 
   if (transition.state.attempts === 1) {
     return {
-      title: "Eri · 晚安守卫",
+      title: "Eri",
       body: "我看见了。现在退回去，还可以当作手滑。",
       level: "timeSensitive",
     };
   }
   if (transition.state.attempts === 2) {
     return {
-      title: "Eri · 晚安守卫",
+      title: "Eri",
       body: "又来。守卫不是留给你练习开锁的。",
       level: "timeSensitive",
     };
   }
   return {
-    title: "Eri · 晚安守卫",
+    title: "Eri",
     body: `第${transition.state.attempts}次。证据已经够完整了，Mith。关掉。`,
     level: "timeSensitive",
   };
